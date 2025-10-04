@@ -6,8 +6,8 @@ app.use(express.json());
 
 // Test route
 app.get("/", async (req, res) => {
-  const result = await pool.query("SELECT NOW()");
-  res.send(result.rows[0]);
+  const result = await pool.query("SELECT * FROM movies");
+  res.send(result.rows);
 });
 
 app.listen(3000, () => {
