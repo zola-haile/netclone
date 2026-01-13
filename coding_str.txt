@@ -1,0 +1,60 @@
+netclone/
+├── client/                # React frontend
+│   ├── src/
+│   │   ├── assets/        # images, icons, logos
+│   │   ├── components/    # reusable UI building blocks (Navbar, MovieCard, etc.)
+│   │   ├── pages/         # route-level pages (HomePage, LoginPage, etc.)
+│   │   ├── hooks/         # custom React hooks (optional)
+│   │   ├── services/      # API call logic (fetching data from backend)
+│   │   ├── App.jsx
+│   │   ├── main.jsx
+│   │   └── index.css
+│   └── package.json
+│
+├── server/                # Node.js backend (Express + PostgreSQL)
+│   ├── db/
+│   │   ├── pool.js        # sets up PostgreSQL connection
+│   │   └── queries.js     # SQL query functions
+│   ├── routes/
+│   │   ├── users.js       # user auth routes
+│   │   └── movies.js      # movie routes
+│   ├── controllers/
+│   │   ├── usersController.js
+│   │   └── moviesController.js
+│   ├── server.js          # main entry point (Express app)
+│   └── package.json
+│
+└── docker-compose.yml     # (optional) run both backend + DB in containers
+
+
+
+
+
+
+src/
+├── assets/
+│   └── images/
+├── components/
+│   ├── NavBar/
+│   │   ├── NavBar.jsx
+│   │   └── NavBar.css
+│   ├── MovieCard/
+│   │   ├── MovieCard.jsx
+│   │   └── MovieCard.css
+│   └── MovieGroup/
+│       ├── MovieGroup.jsx
+│       └── MovieGroup.css
+├── pages/
+│   ├── HomePage/
+│   │   ├── HomePage.jsx
+│   │   └── HomePage.css
+│   ├── LoginPage/
+│   │   ├── LoginPage.jsx
+│   │   └── LoginPage.css
+│   └── ProfilePage/
+│       ├── ProfilePage.jsx
+│       └── ProfilePage.css
+├── App.jsx
+├── App.css
+├── main.jsx
+└── index.css

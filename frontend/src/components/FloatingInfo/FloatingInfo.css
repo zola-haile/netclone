@@ -1,0 +1,26 @@
+.floating-info {
+    position: absolute;
+    top: -10px;               /* adjust where it appears relative to card */
+    left: 100%;               /* place it to the right side of card */
+    width: 300px;
+    background-color: rgba(20, 20, 20, 0.95);
+    color: white;
+    padding: 1rem;
+    font-size: small;
+    border-radius: 8px;
+    z-index: 20;
+    pointer-events: none;     /* prevents mouse flicker */
+  }
+  .floating-info-overlay {
+    z-index: 9999;
+    pointer-events: none;
+  }
+  h3{
+    line-height: 0.5rem;
+  }
+
+  .rating_runtime{
+    display: flex;
+    flex-wrap: nowrap;
+    gap:0.5rem;
+  }

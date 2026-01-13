@@ -1,0 +1,11 @@
+.watching_container{
+    padding-left: 5%;
+    padding-right: 5%;
+    justify-content: center;
+
+}
+
+.watching_container video{
+    width: 90%;
+    height: 90%;
+}
