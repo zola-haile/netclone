@@ -2,6 +2,10 @@ import express from "express";
 import pool from "./db/pool.js"
 import cors from "cors";
 
+import dotenv from "dotenv";
+dotenv.config();
+
+
 import MoviesRouter from "./routes/movies.js"
 
 
@@ -14,6 +18,8 @@ app.use(cors({
 }));
 
 app.use("/movies",MoviesRouter);
+
+
 
 
 app.listen(3000, () => {

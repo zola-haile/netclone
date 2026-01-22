@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { useAuth } from "/src/AuthContext/AuthContext.jsx";
+
+
 import "./LoginPage.css"
 
 
@@ -11,6 +14,8 @@ function LoginPage() {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const {login,logout} = useAuth();
+    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -36,8 +41,10 @@ function LoginPage() {
             // console.log(data.message)
 
             if (data.message){
+                // console.log(data.user_info);
                 login(data.token);
-                navigate("/",{ replace: true })
+
+                navigate("/",{ replace: true });
             }
 
             

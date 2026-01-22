@@ -234,6 +234,23 @@ const authenticate_user = async (email,password) => {
 // console.log(res);
 
 
+const find_user = async (email) => {
+  try{
+    // console.log("Holla")
+    const query = `SELECT firstname,lastname,email FROM users WHERE email = $1`;
+    const result = await pool.query(query, [email]);
+
+    return result.rows[0] || null;
+
+    }catch(err){
+    console.log("Authentication is not working: ",err)
+  }
+}
+
+// find_user("z@y.h").then(user_info=>{
+//   console.log(user_info);
+// })
+
 const print_users = async ()=>{
   try{
     const users = await pool.query("SELECT * FROM users;");
@@ -250,7 +267,7 @@ const print_users = async ()=>{
 
 // pool.end();
 
-export {add_movie,return_all_movies,return_shows_movies,authenticate_user}
+export {add_movie,return_all_movies,return_shows_movies,authenticate_user,find_user}
 
 
 

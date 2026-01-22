@@ -9,18 +9,21 @@ import WatchPage from "./pages/Watch/WatchPage.jsx";
 import LoginPage from "./pages/Login/LoginPage.jsx";
 import MainLayout from "./components/Layout/MainLayout.jsx";
 import ProtectedRoute from "./components/Layout/ProtectedRoute.jsx";
+import UserPage from "./pages/User/UserPage.jsx"
 
 
 function App() {
   return (
     <BrowserRouter>
         <Routes>
-          <Route>
+          <Route element={<ProtectedRoute/>}>
             <Route element={<MainLayout/>}>
               <Route path="/" element={<HomePage />}/>
               <Route path="/movies" element={<MoviesPage />} />
               <Route path="/shows" element={<ShowsPage />} />
               <Route path="/watch" element={<WatchPage/>}/>
+              <Route path="/user" element={<UserPage/>}/>
+
             </Route>
           </Route>
           <Route path="/login" element={<LoginPage/>}/>

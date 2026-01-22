@@ -9,7 +9,7 @@ function NavBar() {
         <li><Link to="/"><h2>NetClone</h2></Link></li>
         <li> <Link to="/movies"> <h2>Movies</h2></Link></li>
         <li> <Link to="/shows"> <h2>Shows</h2></Link></li>
-        <li><h2>User</h2></li>
+        <li> <Link to="/user"> <h2>User</h2></Link></li>
       </ul>
     </nav>
   )
