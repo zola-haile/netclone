@@ -10,6 +10,8 @@ import LoginPage from "./pages/Login/LoginPage.jsx";
 import MainLayout from "./components/Layout/MainLayout.jsx";
 import ProtectedRoute from "./components/Layout/ProtectedRoute.jsx";
 import UserPage from "./pages/User/UserPage.jsx"
+import SignupPage from "./pages/Login/SignupPage.jsx"
+import VerificationPage from "./pages/Login/VerificationPage.jsx"
 
 
 function App() {
@@ -27,6 +29,9 @@ function App() {
             </Route>
           </Route>
           <Route path="/login" element={<LoginPage/>}/>
+          <Route path="/signup" element={<SignupPage/>}/>
+          <Route path="/verify" element={<VerificationPage/>}/>
+
       
         </Routes>
 

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Link } from "react-router-dom";
 
 import { useAuth } from "/src/AuthContext/AuthContext.jsx";
 
@@ -15,6 +15,7 @@ function LoginPage() {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const {login,logout} = useAuth();
+    const [invalid_user,setInvalid_user] = useState(false);
     
 
     const handleSubmit = async (e) => {
@@ -35,17 +36,27 @@ function LoginPage() {
             const data = await res.json();
 
             if (!res.ok) {
-                throw new Error(data.message || "Invalid login");
+                if (res.status === 401){//Invalid credentials
+                    setInvalid_user(true);
+                }else if (res.status === 404){// User not found
+                    setInvalid_user(false);
+                    navigate("/signup")
+                }else if (res.status === 403){// User not verified
+                    setInvalid_user(false);
+                    navigate("/verify",{state:{message:"You have not verified your email yet"}});
+                }
+                //throw new Error(data.message || "Invalid login");
+            }else{
+                login(data.token);
+                navigate("/",{ replace: true });
             }
 
             // console.log(data.message)
 
-            if (data.message){
-                // console.log(data.user_info);
-                login(data.token);
-
-                navigate("/",{ replace: true });
-            }
+            // if (data.message){
+            //     // console.log(data.user_info);
+                
+            // }
 
             
             // Handle successful login (e.g., redirect, store token)
@@ -62,11 +73,11 @@ function LoginPage() {
     };
 
     return (
-        <div className="loginContainer">
+        <div className="form_container">
             <h2 >Login</h2>
             <form onSubmit={handleSubmit}>
-                <div className="loginfieldsContainer" >
-                    <label htmlFor="name" className="loginLabelContainer">
+                <div className="fields_container" >
+                    <label htmlFor="name" className="field_label">
                         Name:
                     </label>
                     <input
@@ -74,12 +85,12 @@ function LoginPage() {
                         type="text"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        className="loginInputs"
+                        className="field_input"
                     />
                 </div>
 
-                <div className="loginfieldsContainer">
-                    <label htmlFor="email" className="loginLabelContainer">
+                <div className="fields_container">
+                    <label htmlFor="email" className="field_label">
                         Email:
                     </label>
                     <input
@@ -88,12 +99,12 @@ function LoginPage() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
-                        className="loginInputs"
+                        className="field_input"
                     />
                 </div>
 
-                <div className="loginfieldsContainer">
-                    <label htmlFor="password" className="loginLabelContainer">
+                <div className="fields_container">
+                    <label htmlFor="password" className="field_label">
                         Password:
                     </label>
                     <input
@@ -102,7 +113,7 @@ function LoginPage() {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
-                        className="loginInputs"
+                        className="field_input"
                     />
                 </div>
 
@@ -124,7 +135,19 @@ function LoginPage() {
                 >
                     {loading ? "Logging in..." : "Submit"}
                 </button>
+
+                <div 
+                    style={{visibility: invalid_user? 'visible' : 'hidden'}} 
+                    className="show_credentials"
+                    >
+
+                        <p>Wrong Password! Try Again!</p>
+                </div>
+
+
+
             </form>
+            <p>No Account? <Link to="/signup"> Signup Now</Link></p>
         </div>
     );
 }

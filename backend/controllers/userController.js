@@ -1,7 +1,9 @@
-import { authenticate_user,find_user } from "../db/queries.js";
+import { authenticate_user,find_user,add_user,verify_email_query } from "../db/queries.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken"
+import crypto from "crypto";
 
+import {send_verification_email} from "../services/email_services.js";
 
 
 const authenticating = async (req, res) => {
@@ -35,6 +37,8 @@ const authenticating = async (req, res) => {
             return res.status(401).json({ message: "Invalid credentials" });
         } else if (result === "User Not Found"){
             return res.status(404).json({ message: "User not found" });
+        }else if (result === "Not Verified"){
+            return res.status(403).json({message: "User not verified"});
         }
 
         // return res.status(401).json({ message: "Invalid credentials" });
@@ -69,4 +73,53 @@ const fetch_userInfo = async(req,res)=>{
     }
 }
 
-export { authenticating, fetch_userInfo};
+const signup = async (req,res)=>{
+    try{
+        const user_info = req.body;
+        const verification_token = crypto.randomBytes(32).toString("hex");
+
+        const added = await add_user(user_info.firstname, user_info.lastname, user_info.email,user_info.password,verification_token);
+
+        if (added===1){
+            return res.status(409).json({
+                message: `user with ${user_info} already exists`
+            })
+        }else if (added === 2){
+            await send_verification_email(user_info.email, verification_token);
+            return res.status(200).json({
+                message: "Successfully Added"
+            });
+        }
+
+
+        
+    }catch(error){
+        console.error("Error: ", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+
+}
+
+
+const verify_email = async (req,res)=>{
+    try{
+        const ver_token = req.query.token;
+
+        const verified = await verify_email_query(ver_token);
+
+        if (verified === 2){
+            return res.redirect("http://localhost:5173/login");
+        }else if (verified === 1){
+            return res.status(400).send("Invalid or expired token");
+        }
+
+        // console.log(ver_token);
+
+    }catch(error){
+        console.error("Error: ", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+
+}
+
+export { authenticating, fetch_userInfo, signup, verify_email};

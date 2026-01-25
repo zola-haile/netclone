@@ -1,6 +1,8 @@
 import pool from "./pool.js"
 import bcrypt from "bcrypt";
 
+
+
 const create_movies_table = async () => {
   try {
     const query = `
@@ -175,7 +177,8 @@ const create_user_table = async ()=>{
         firstname VARCHAR(50) NOT NULL,
         lastname VARCHAR(50) NOT NULL,
         email VARCHAR(100) UNIQUE NOT NULL,
-        password VARCHAR(255) NOT NULL
+        password VARCHAR(255) NOT NULL,
+        is_validated BOOLEAN
       );
     `
     await pool.query(query);
@@ -187,17 +190,45 @@ const create_user_table = async ()=>{
 
 // create_user_table()
 
-const add_user = async (firstname,lastname,email,password)=>{
-  const salt_rounds = await bcrypt.genSalt(10);
-  const hashed_password = await bcrypt.hash(password,salt_rounds);
+const check_user_existence = async (email) => {
+  try{
+    // console.log("Holla")
+    const query = `SELECT email FROM users WHERE email = $1`;
+    const result = await pool.query(query, [email]);
+
+    if (result.rows[0]){
+      return true;
+    }else{
+      return false;
+    }
+
+    }catch(err){
+    console.log("Authentication is not working: ",err)
+  }
+}
+// check_user_existence("i@y.h").then((res)=>console.log(res));
+
+const add_user = async (firstname,lastname,email,password,verificationToken)=>{
+  
 
   try{
+
+    const existing_user = await check_user_existence(email);
+
+    if (existing_user){
+      return 1 ;//  1->"Exisiting User"
+    }
+
+    const salt_rounds = await bcrypt.genSalt(10);
+    const hashed_password = await bcrypt.hash(password,salt_rounds);
+    
+
     const query = `
-      INSERT INTO users (firstname,lastname,email,password)
-      VALUES($1,$2,$3,$4);
+      INSERT INTO users (firstname,lastname,email,password,is_validated,email_verify_token,email_verify_expires)
+      VALUES($1,$2,$3,$4,$5,$6,NOW() + INTERVAL '24 hours');
     `
-    await pool.query(query,[firstname,lastname,email,hashed_password]);
-    console.log("Success!")
+    await pool.query(query,[firstname,lastname,email,hashed_password,false,verificationToken]);
+    return 2; //   2->"Added user";
   }catch(err){
     console.log("Failed to add user!:", err);
   }
@@ -205,6 +236,33 @@ const add_user = async (firstname,lastname,email,password)=>{
 // add_user("z","h","z@y.h","z");
 
 // add_user("Lola","Mela","meta@gmail.com","hola");
+
+
+const verify_email_query = async (token)=>{
+  try{
+    const query = `SELECT * FROM users 
+                  WHERE email_verify_token = $1 AND email_verify_expires > NOW()`
+    let ver_result = await pool.query(query,[token]);
+
+    if(ver_result.rowCount === 0){
+      return 1;
+    }else{
+      const query2 = `UPDATE users
+                      SET is_validated = true,
+                      email_verify_token = NULL,
+                      email_verify_expires = NULL
+                      WHERE email_verify_token = $1`
+      let verified = await pool.query(query2,[token]);
+      return 2; //successfully verified
+      
+    }
+
+  }catch(err){
+    console.log("Failed to verify user email!:", err);
+  }
+}
+
+
 
 const authenticate_user = async (email,password) => {
   try{
@@ -216,6 +274,7 @@ const authenticate_user = async (email,password) => {
     }
     const user= result.rows[0];
     const matched = await bcrypt.compare(password, user.password);
+    console.log(user.is_validated);
 
     if (matched){
       // console.log("Success")
@@ -267,7 +326,7 @@ const print_users = async ()=>{
 
 // pool.end();
 
-export {add_movie,return_all_movies,return_shows_movies,authenticate_user,find_user}
+export {add_movie,return_all_movies,return_shows_movies,authenticate_user,find_user,add_user,verify_email_query}
 
 
 

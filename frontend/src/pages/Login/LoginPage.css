@@ -1,19 +1,19 @@
-.loginContainer{
+.form_container{
     max-width:400px;
     margin: 50px auto;
     padding: 10px;
     color: rgb(49, 130, 97);
 }
 
-.loginfieldsContainer{
+.fields_container{
     margin-bottom:15px;
 }
-.loginLabelContainer{
+.field_label{
     display: block;
     margin-bottom: 5px
 }
 
-.loginInputs{
+.field_input{
     width: 100%;
     padding: 8px
 }
@@ -21,4 +21,9 @@
 .loginSubmitButton{
     width: 100%; 
     padding: 10px;
+}
+
+.show_credentials{
+    color: red;
+    
 }
