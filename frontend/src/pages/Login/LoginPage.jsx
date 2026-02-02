@@ -43,7 +43,7 @@ function LoginPage() {
                     navigate("/signup")
                 }else if (res.status === 403){// User not verified
                     setInvalid_user(false);
-                    navigate("/verify",{state:{message:"You have not verified your email yet"}});
+                    navigate("/verify",{state:{message:"You have not verified your email yet."}});
                 }
                 //throw new Error(data.message || "Invalid login");
             }else{

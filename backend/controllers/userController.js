@@ -1,4 +1,4 @@
-import { authenticate_user,find_user,add_user,verify_email_query } from "../db/queries.js";
+import { authenticate_user,find_user,add_user,verify_email_query,re_verifying} from "../db/queries.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken"
 import crypto from "crypto";
@@ -122,4 +122,37 @@ const verify_email = async (req,res)=>{
 
 }
 
-export { authenticating, fetch_userInfo, signup, verify_email};
+const resend_verification = async (req,res) =>{
+    try{
+        const user = req.body;
+        const user_found = await find_user(user.email);
+
+        // console.log(user_found);
+
+        if (user_found) {
+            
+            const user_token = await re_verifying(user.email);
+            // console.log(user_token.email_verify_token);
+            await send_verification_email(user.email, user_token.email_verify_token);
+
+            return res.status(200).json({
+                message: "Resent verification!"
+            });
+
+        }else{
+            //return user not found
+        }
+
+        return res.status(200).json({
+                message: "Works"
+            });
+
+    }catch(error){
+        console.error("Error: ", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+
+
+export { authenticating, fetch_userInfo, signup, verify_email,resend_verification};

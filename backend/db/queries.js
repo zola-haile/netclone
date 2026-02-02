@@ -237,6 +237,29 @@ const add_user = async (firstname,lastname,email,password,verificationToken)=>{
 
 // add_user("Lola","Mela","meta@gmail.com","hola");
 
+const re_verifying = async (email)=>{
+  try{
+    const query = `
+      UPDATE users 
+      SET email_verify_expires = NOW() + INTERVAL '24 hours'
+      WHERE email = $1;
+    `
+    await pool.query(query,[email]);
+
+
+    const query2 = `SELECT email_verify_token FROM users WHERE email = $1;`
+    const token = await pool.query(query2,[email]);
+    // console.log(token.rows[0]);
+  //  returns {
+    //   email_verify_token: 'b65e8564c508ac59447558acc6a1504fac7d00ff6bd75449bd09bb5b4d9a55c5'
+    // }
+    return token.rows[0];
+
+  }catch(err){
+    console.log(err);
+  }
+}
+
 
 const verify_email_query = async (token)=>{
   try{
@@ -274,11 +297,13 @@ const authenticate_user = async (email,password) => {
     }
     const user= result.rows[0];
     const matched = await bcrypt.compare(password, user.password);
-    console.log(user.is_validated);
+    // console.log(user.is_validated);
 
-    if (matched){
+    if (matched && user.is_validated){
       // console.log("Success")
       return "Success";
+    }else if(matched && !user.is_validated){
+      return "Not Verified";
     }else{
       // console.log("Failed to login")
       return "Failed to login";
@@ -326,7 +351,7 @@ const print_users = async ()=>{
 
 // pool.end();
 
-export {add_movie,return_all_movies,return_shows_movies,authenticate_user,find_user,add_user,verify_email_query}
+export {add_movie,return_all_movies,return_shows_movies,authenticate_user,find_user,add_user,verify_email_query, re_verifying}
 
 
 
