@@ -132,15 +132,24 @@ const resend_verification = async (req,res) =>{
         if (user_found) {
             
             const user_token = await re_verifying(user.email);
-            // console.log(user_token.email_verify_token);
-            await send_verification_email(user.email, user_token.email_verify_token);
-
-            return res.status(200).json({
-                message: "Resent verification!"
-            });
-
+            // console.log(user_token.is_validated);
+            if(!user_token.is_validated){
+                await send_verification_email(user.email, user_token.email_verify_token);
+                
+                return res.status(200).json({
+                    message: "Resent verification!"
+                });
+            }else{
+                return res.status(200).json({
+                    message: "Already Verified"
+                });
+            }
         }else{
             //return user not found
+            // console.log("Nananana")
+            return res.status(404).json({
+                message: "No user with that email"
+            })
         }
 
         return res.status(200).json({

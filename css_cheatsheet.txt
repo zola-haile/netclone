@@ -1,0 +1,9 @@
+flex:
+    use to center children:
+        display - Must be set to flex or inline-flex
+        flex-direction - Sets the display-direction of flex items --> (row (default); column; row-reverse;column-reverse)
+        flex-wrap - Specifies whether the flex items should wrap or not --> (nowrap (default); wrap; wrap-reverse)
+        flex-flow - Shorthand property for flex-direction and flex-wrap --> (e.g. flex-flow: row wrap;)
+        justify-content - Aligns the flex items when they do not use all available space on the main-axis (horizontally)
+        align-items - Aligns the flex items when they do not use all available space on the cross-axis (vertically)
+        align-content - Aligns the flex lines when there is extra space in the cross axis and flex items wrap 

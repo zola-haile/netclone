@@ -1,1 +1,6 @@
 fix the verified login for the whole interface access!
+
+verification:
+    user already verified
+    user not found
+    user found

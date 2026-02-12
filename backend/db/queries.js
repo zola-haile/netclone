@@ -247,7 +247,7 @@ const re_verifying = async (email)=>{
     await pool.query(query,[email]);
 
 
-    const query2 = `SELECT email_verify_token FROM users WHERE email = $1;`
+    const query2 = `SELECT email_verify_token,is_validated FROM users WHERE email = $1;`
     const token = await pool.query(query2,[email]);
     // console.log(token.rows[0]);
   //  returns {
@@ -295,7 +295,7 @@ const authenticate_user = async (email,password) => {
     if (result.rows.length === 0){
       return "User Not Found"
     }
-    const user= result.rows[0];
+    const user = result.rows[0];
     const matched = await bcrypt.compare(password, user.password);
     // console.log(user.is_validated);
 

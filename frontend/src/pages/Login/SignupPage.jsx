@@ -48,10 +48,6 @@ function SignupPage(){
         }
     }
 
-
-
-
-
     return(
         <div className="form_container">
            <form onSubmit={handle_signup}>

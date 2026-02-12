@@ -5,6 +5,10 @@ import { useLocation, useNavigate,Link } from 'react-router-dom';
 
 function VerificationPage(){
     const [email,setEmail] = useState("") 
+    const [sent_ver,setSent_ver] = useState(false);
+    const [ver_message,setVer_message] = useState("");
+
+
     const navigate = useNavigate()
 
     const resend_verification = async(e) => {
@@ -23,9 +27,19 @@ function VerificationPage(){
             // console.log("Olala")
             const data = await res.json();
             if (!res.ok){
-
+                // console.log(res.status);
+                if (res.status === 404){
+                    setVer_message("Your email is not in the database. Create an account!")
+                    navigate("/signup");
+                }
             }else{
-                console.log(data.message);
+                if (data.message === "Resent verification!"){
+                    setSent_ver(true);
+                    setVer_message("Just sent an email. Check your email sil vous plait")
+                }else if (data.message === "Already Verified"){
+                    navigate("/login");
+                }
+                
             }
         }catch(err) {
             console.log(err);
@@ -37,6 +51,8 @@ function VerificationPage(){
     const location = useLocation();
 
     const message = location.state;
+
+    if (!message) return;
 
     return(
         <div className="form_container">
@@ -59,11 +75,17 @@ function VerificationPage(){
                     type="submit">
                     Resent Verification Email
                 </button>
-                
-                
-                
 
             </form> 
+
+            <p 
+            style={{visibility: sent_ver? 'visible' : 'hidden'}} 
+            >
+                {ver_message}
+                <br />
+                <Link to="/login"> Go to Login </Link>
+            </p>
+
 
             
         </div>

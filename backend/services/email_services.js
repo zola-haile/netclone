@@ -27,10 +27,10 @@ const transporter = nodemailer.createTransport({
     });
 } 
 
-export const ver_sender = async()=>{
-  const ver = await transporter.verify();
-  console.log("Email server ready", ver);
-}
+// export const ver_sender = async()=>{
+//   const ver = await transporter.verify();
+//   console.log("Email server ready", ver);
+// }
 
 
 
