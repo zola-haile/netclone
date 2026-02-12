@@ -7,10 +7,32 @@ import "./UserPage.css"
 
 
 
+
+
+
 function UserPage() {
+  
   const {logout} = useAuth();
 
   const [user, setUser] = useState(null);
+  const [activated,setActivated] = useState("personal_info"); // can be: personal_info(PersonalInfo), history(History), costumize(Personalize),secutiry(Security)
+
+  const renderContent = () => {
+    switch (activated) {
+      case "personal_info":
+        return < PersonalInfo />
+      case "history":
+        return <History />;
+      case "costumize":
+        return <Personalize />;
+      case "secutiry":
+        return <Security />;
+      default:
+        return <PersonalInfo/>;
+    }
+  };
+
+
 
   const logging_out = (e) => {
     e.preventDefault(); 
@@ -56,19 +78,28 @@ function UserPage() {
       <div>
         {/* <h1>Welcome {user.firstname} {user.lastname}</h1> */}
         <img src="" alt="Profile Picture" />
-        <h2 className="element_containers">Personal Info</h2>
-        <h2 className="element_containers">Security</h2>
-        <h2 className="element_containers">Personalize</h2>
-        <h2 className="element_containers">History</h2>
+        <h2 className="element_containers" onClick={()=>setActivated("personal_info")}>
+          Personal Info
+        </h2>
+        <h2 className="element_containers" onClick={()=>setActivated("secutiry")}>
+          Security
+        </h2>
+        <h2 className="element_containers" onClick={()=>setActivated("costumize")}>
+          Personalize
+        </h2>
+        <h2 className="element_containers" onClick={()=>setActivated("personal_info")}>
+          History
+        </h2>
 
 
 
         {/* <h2>Your Email is {user.email}</h2> */}
         <h2></h2>
         <button onClick={logging_out} >Logout</button>
-      </div>   
+      </div>  
+
       <div>
-        {/* <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Laboriosam, optio error vitae non porro unde praesentium fuga corrupti quas nemo ex quam voluptas possimus rem! Omnis, aspernatur! Blanditiis, soluta repudiandae?</p> */}
+          {renderContent()}
       </div>
 
     </div>
