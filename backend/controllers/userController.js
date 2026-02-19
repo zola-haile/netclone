@@ -1,4 +1,4 @@
-import { authenticate_user,find_user,add_user,verify_email_query,re_verifying} from "../db/queries.js";
+import { authenticate_user,find_user,add_user,verify_email_query,re_verifying,get_watch_history_1user} from "../db/queries.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken"
 import crypto from "crypto";
@@ -162,6 +162,28 @@ const resend_verification = async (req,res) =>{
     }
 }
 
+const get_user_watch_history = async (req,res) =>{
+    try{
+        const id = req.body;
+        // console.log(id.user_id);
+        const watch_history = await get_watch_history_1user(id.user_id);
+        // console.log(watch_history)
+        if (watch_history.length > 0){
+            return res.status(200).json(
+                {message:watch_history})
+        }else{
+            return res.status(404).json(
+                {message:"No history found for the current user!"}
+            )
+        }
+
+    }catch(error){
+        console.error("Error: ", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+}
+ 
+// get_watch_history_1user(10).then(res=>console.log(res));
 
 
-export { authenticating, fetch_userInfo, signup, verify_email,resend_verification};
+export { authenticating, fetch_userInfo, signup, verify_email,resend_verification,get_user_watch_history};

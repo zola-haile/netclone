@@ -321,7 +321,7 @@ const authenticate_user = async (email,password) => {
 const find_user = async (email) => {
   try{
     // console.log("Holla")
-    const query = `SELECT firstname,lastname,email FROM users WHERE email = $1`;
+    const query = `SELECT id,profile_pictur_url,firstname,lastname,email FROM users WHERE email = $1`;
     const result = await pool.query(query, [email]);
 
     return result.rows[0] || null;
@@ -347,11 +347,96 @@ const print_users = async ()=>{
 // print_users();
 
 
+const create_watch_history_table = async () => {
+  try {
+    const query = `CREATE TABLE IF NOT EXISTS watch_history(
+                    id SERIAL PRIMARY KEY,
+                    user_id INT NOT NULL,
+                    movie_id INT NOT NULL,
+                    last_position INT DEFAULT 0, -- seconds watched
+                    completed BOOLEAN DEFAULT FALSE,
+                    watched_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    
+                    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+                    FOREIGN KEY (movie_id) REFERENCES movies(id) ON DELETE CASCADE
+                  )`;
+    await pool.query(query);
+    console.log("watch_history table created successfully");
+  } catch (err) {
+    console.error("Error creating table:", err);
+  }
+};
+
+// create_watch_history_table().then();
+
+
+const movie_exists_in_watch_history = async (user_id,movie_id)=>{
+  try{
+    const query = 
+    `SELECT * FROM watch_history
+    WHERE user_id=$1 AND movie_id=$2`
+
+    let res = await pool.query(query,[user_id,movie_id])
+    res = res.rows
+    // console.log(res);
+
+    if(res.length > 0){
+      return true; //already there
+    }
+    return false
+  }catch(err){
+     console.error("Error: ", err);
+  }
+}
+
+// get_watch_history().then(res=>console.log(res))
+
+const add_to_watch_history = async(user_id,movie_id,last_position,completed,watched_at)=>{
+  try{
+    let existing = await movie_exists_in_watch_history(user_id,movie_id);
+    console.log(existing)
+
+    if(existing){
+      return {message:"Already exists in the watch history!"};
+    }
+    const query = 
+    `INSERT INTO watch_history
+    (user_id,movie_id,last_position,completed,watched_at)
+    VALUES($1,$2,$3,$4,$5)
+    `
+    const added = await pool.query(query,[user_id,movie_id,last_position,completed,watched_at])
+    return added;
+
+  }catch(err){
+    console.error("Error: ", err);
+  }
+}
+
+// add_to_watch_history(23,10,0,false,new Date()).then(added=>console.log(added[0]));
+
+
+
+// movie_exists_in_watch_history(10,10).then((exists)=>console.log(exists));
+
+const get_watch_history_1user = async (user_id)=>{
+  try{
+    const query = ` SELECT * FROM watch_history
+                    WHERE user_id=$1`
+    const result = await pool.query(query,[user_id])
+    return result.rows;
+  }catch(err){
+    console.error("Error: ", err);
+  }
+}
+
+// get_watch_history_1user(10).then((his)=>console.log(his));
+
+
 
 
 // pool.end();
 
-export {add_movie,return_all_movies,return_shows_movies,authenticate_user,find_user,add_user,verify_email_query, re_verifying}
+export {add_movie,return_all_movies,return_shows_movies,authenticate_user,find_user,add_user,verify_email_query, re_verifying,get_watch_history_1user}
 
 
 
