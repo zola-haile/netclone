@@ -1,4 +1,4 @@
-import {add_movie,return_all_movies,return_shows_movies} from "../db/queries.js"
+import {add_movie,return_all_movies,return_shows_movies,get_movies_by_id} from "../db/queries.js"
 
 const get_all_movies = async (req, res)=>{
     try{
@@ -21,5 +21,7 @@ const get_shows_or_movies = async (req,res)=>{
     }
     
 }
+
+
 
 export {get_all_movies,get_shows_or_movies}

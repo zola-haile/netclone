@@ -1,3 +1,6 @@
+import { useEffect, useState } from "react";
+import MoviesWraped from "/src/components/MoviesWraped/MoviesWraped.jsx"
+
 function PersonalInfo(){
     return(
         <div>
@@ -24,9 +27,11 @@ function Personalize(){
 }
 
 
-function History({user_info}){
+function  History({user_info}){
+    const [history, setHistory] = useState([]);
+
+
     async function  getUserWatchHistory(user_id){
-        
         try{
             const res = await fetch("http://localhost:3000/movies/user/watch_history",{
                 method: "POST",
@@ -39,23 +44,31 @@ function History({user_info}){
                 throw new Error("No History found for current user");
             }
             const user_watch_history = await res.json()
-            console.log(user_watch_history);
+            // console.log(user_watch_history);
             return user_watch_history;
         }catch(err){
             console.error("Error: ",err)
         }
     }
-    // console.log(user_info);
 
-    let user_watch_history =null;
-    getUserWatchHistory(user_info.id).then((res)=>user_watch_history=res);
+    useEffect(() => {
+        async function fetchHistory() {
+            const data = await getUserWatchHistory(user_info.id);
+            // console.log(data.message[0])
+            setHistory(data.message);
+            // console.log(history);
+        }
 
+        fetchHistory();
+    }, [user_info]);
 
-    return(
+    return (
         <div>
-            <h1>This is History part</h1>
+            {/* <h1>This is History part</h1> */}
+            <h1>Recently watched</h1>
+            <MoviesWraped historyList={history}/>
         </div>
-    )
+    );
 }
 
 export {History,PersonalInfo,Personalize,Security}

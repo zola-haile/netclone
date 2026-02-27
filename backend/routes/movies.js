@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.get("/getAllFilms",get_all_movies);
 router.get("/getMovieByType",get_shows_or_movies); //sample url /getMovieByType?type=movie or /getMovieByType?type=show
+// router.post("/getMoviesById",get_all_movies_with_id);
 
 router.post("/user/login",authenticating);
 

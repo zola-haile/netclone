@@ -166,6 +166,24 @@ const update_movies_table = async (title,year)=>{
   }
 }
 
+const get_movies_by_id = async (movie_ids) =>{
+  try{
+    const query = ` 
+      SELECT * 
+      FROM movies
+      JOIN movies ON watch_history.id
+      WHERE id=ANY($1);
+    `
+    const movie = await pool.query(query,[movie_ids]);
+    return movie;
+
+  }catch(err){
+    console.error("Error: ", err);
+  }
+}
+
+// get_movies_by_id([1,2,3,4]).then(res=>console.log(res.rows));
+
 
 //user table:
 
@@ -420,8 +438,13 @@ const add_to_watch_history = async(user_id,movie_id,last_position,completed,watc
 
 const get_watch_history_1user = async (user_id)=>{
   try{
-    const query = ` SELECT * FROM watch_history
-                    WHERE user_id=$1`
+    const query = `
+    SELECT * 
+    FROM watch_history 
+    INNER JOIN movies on movies.id = watch_history.movie_id
+    WHERE watch_history.user_id= $1;
+    `
+
     const result = await pool.query(query,[user_id])
     return result.rows;
   }catch(err){
@@ -436,7 +459,7 @@ const get_watch_history_1user = async (user_id)=>{
 
 // pool.end();
 
-export {add_movie,return_all_movies,return_shows_movies,authenticate_user,find_user,add_user,verify_email_query, re_verifying,get_watch_history_1user}
+export {add_movie,return_all_movies,return_shows_movies,get_movies_by_id,authenticate_user,find_user,add_user,verify_email_query, re_verifying,get_watch_history_1user}
 
 
 
