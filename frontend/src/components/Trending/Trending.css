@@ -1,45 +1,190 @@
-#trending_container{
-    padding: 0.5rem;
+#trending_container {
+    position: relative;
     width: 100%;
-    height: 80vh;
-    display: grid;
-    grid-template-columns: 0.5fr 1.5fr 6fr 0.5fr;
-    /* justify-content: center;
-    align-items: center; */
-    overflow: hidden;     /* Prevent anything inside from overflowing */
-    background-color: #222;
-    
-}
-
-.image_container{
-    width: 100%;           /* Or any size you like */
-    height: 100%;          /* Keeps image-container smaller than parent */
-    overflow: hidden;     /* Prevents image overflow */
+    height: 82vh;
+    min-height: 480px;
+    background-size: cover;
+    background-position: center top;
+    background-repeat: no-repeat;
+    overflow: hidden;
     display: flex;
-    justify-content: center;
+    align-items: flex-end;
+}
+
+/* Dark gradient from left so text is readable */
+.trending_overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to right,
+        rgba(5, 2, 2, 0.95) 0%,
+        rgba(5, 2, 2, 0.7) 45%,
+        rgba(5, 2, 2, 0.1) 75%,
+        transparent 100%
+    );
+    z-index: 1;
+}
+
+/* Bottom fade into page background */
+.trending_overlay_bottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 160px;
+    background: linear-gradient(to top, var(--bg-base), transparent);
+    z-index: 1;
+}
+
+/* Content block */
+.trending_content {
+    position: relative;
+    z-index: 2;
+    padding: 0 60px 56px;
+    max-width: 560px;
+    transition: opacity 0.3s ease;
+}
+
+.trending_fade {
+    opacity: 0;
+}
+
+/* Badges row */
+.trending_badges {
+    display: flex;
     align-items: center;
-    background-color: aliceblue;
+    gap: 10px;
+    margin-bottom: 14px;
 }
 
-.image_container img{
-    max-width: 100%;      /* Image never exceeds its parent width */
-    max-height: 100%;     /* Image never exceeds its parent height */
-    object-fit: contain;   /* Keeps full image visible */
-    display: block;
+.trending_badge {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--accent);
+    border: 1px solid var(--accent-border);
+    padding: 3px 10px;
+    border-radius: 4px;
 }
 
-/* p{
-    background-color: bisque;
-} */
+.trending_rating {
+    font-size: 13px;
+    color: #ffd700;
+    font-weight: 600;
+}
 
-/* h3{
-    background-color: #29361e;
-} */
+/* Title */
+.trending_title {
+    margin: 0 0 12px;
+    font-size: clamp(28px, 4vw, 52px);
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.6);
+}
 
-#desc_container{
-    width: 100%;
-    height: 100%;
-    background-color: rgb(37, 34, 31);
-    display: grid;
-    grid-template-rows: auto auto auto 1fr;
+/* Genre pills */
+.trending_genres {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+}
+
+.trending_genre_tag {
+    font-size: 12px;
+    color: #bbb;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    padding: 3px 10px;
+    border-radius: 20px;
+}
+
+/* Description */
+.trending_description {
+    margin: 0 0 24px;
+    font-size: 14px;
+    color: #bbb;
+    line-height: 1.6;
+    max-width: 460px;
+}
+
+/* Buttons */
+.trending_actions {
+    display: flex;
+    gap: 12px;
+}
+
+.trending_watch_btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 28px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+}
+.trending_watch_btn:hover {
+    background: var(--accent-hover);
+    transform: translateY(-1px);
+}
+
+/* Arrow buttons */
+.trending_arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    background: rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #fff;
+    font-size: 36px;
+    line-height: 1;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    padding: 0;
+}
+.trending_arrow:hover {
+    background: rgba(0,0,0,0.75);
+}
+
+.trending_arrow_left  { left: 16px; }
+.trending_arrow_right { right: 16px; }
+
+/* Dot indicators */
+.trending_dots {
+    position: absolute;
+    bottom: 20px;
+    right: 28px;
+    z-index: 3;
+    display: flex;
+    gap: 6px;
+}
+
+.trending_dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.3);
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.trending_dot_active {
+    background: var(--accent);
+    transform: scale(1.3);
 }

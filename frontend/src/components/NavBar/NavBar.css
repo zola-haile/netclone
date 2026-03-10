@@ -1,18 +1,97 @@
-#nav_container{
-    padding: 1rem;
-    background-color: rgb(49, 44, 44);
+#nav_container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    height: 60px;
+    background: rgba(10, 5, 5, 0.92);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--bg-border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
     width: 100%;
+    box-sizing: border-box;
 }
 
-#nav_list{
+/* Brand */
+#nav_brand {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--accent);
+    text-decoration: none;
+    flex-shrink: 0;
+}
+
+/* Center links */
+#nav_list {
     list-style: none;
     display: flex;
-    gap: 2rem;
+    gap: 4px;
     padding: 0;
     margin: 0;
- }
+}
 
- a {
-  text-decoration: none;
-  color: inherit; 
+/* Individual nav links */
+.nav_link {
+    display: block;
+    padding: 6px 14px;
+    border-radius: 7px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #888;
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+}
+
+.nav_link:hover {
+    background: var(--bg-card);
+    color: #ddd;
+}
+
+.nav_link.nav_active {
+    background: var(--accent-muted);
+    color: #fff;
+}
+
+/* My Account button on the right */
+.nav_user_btn {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #ccc;
+    text-decoration: none;
+    border: 1px solid var(--accent-muted);
+    background: var(--bg-elevated);
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    flex-shrink: 0;
+}
+
+.nav_user_btn::before {
+    content: "👤";
+    font-size: 13px;
+}
+
+.nav_user_btn:hover {
+    background: var(--accent-muted);
+    color: #fff;
+    border-color: var(--accent);
+}
+
+.nav_user_btn.nav_active {
+    background: var(--accent-muted);
+    color: #fff;
+    border-color: var(--accent);
+}
+
+/* Global link reset — scoped to nav only */
+#nav_container a {
+    text-decoration: none;
+    color: inherit;
 }

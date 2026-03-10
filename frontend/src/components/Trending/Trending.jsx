@@ -2,46 +2,35 @@ import "./Trending.css"
 import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 
-import OnePiece from "/src/assets/images/One_piece.jpg"
-import Rickmorty from "/src/assets/images/rickmorty.jpeg"
-
 
 function Trending({ movies = [] }) {
   const [index, setIndex] = useState(0);
+  const [fading, setFading] = useState(false);
   const timerRef = useRef(null);
   const timeInterval = 8000;
 
-  const next = ()=>{
-    setIndex((prev)=>(prev + 1) % movies.length);
-  }
-
-  const prev = () => {
-    setIndex((prev) => (prev - 1 + movies.length) % movies.length);
+  const goTo = (newIndex) => {
+    setFading(true);
+    setTimeout(() => {
+      setIndex(newIndex);
+      setFading(false);
+    }, 300);
   };
+
+  const next = () => goTo((index + 1) % movies.length);
+  const prev = () => goTo((index - 1 + movies.length) % movies.length);
 
   const resetTimer = () => {
     clearInterval(timerRef.current);
     timerRef.current = setInterval(next, timeInterval);
   };
 
-  const handleNext = ()=>{
-    next();
-    resetTimer()
-  }
-
-  const handlePrev = () => {
-    prev();
-    resetTimer();
-  }
-
+  const handleNext = () => { next(); resetTimer(); };
+  const handlePrev = () => { prev(); resetTimer(); };
 
   useEffect(() => {
     if (!movies.length) return;
-
-    timerRef.current = setInterval(() => {
-      next();
-    }, timeInterval); 
-
+    timerRef.current = setInterval(next, timeInterval);
     return () => clearInterval(timerRef.current);
   }, [movies]);
 
@@ -50,36 +39,62 @@ function Trending({ movies = [] }) {
   const movie = movies[index];
 
   return (
-      <div id="trending_container">
-              <div onClick={handlePrev}> Prev </div>
-              
-              <div key={movie.id} className="trending_item">
-               <Link to="/watch" state={{movie}}>
-               <h3>{movie.title}</h3> 
+    <div
+      id="trending_container"
+      style={{ backgroundImage: `url(${movie.poster_url})` }}
+    >
+      {/* Gradient overlays */}
+      <div className="trending_overlay" />
+      <div className="trending_overlay_bottom" />
 
-                <div id="desc_container">
-                  <p>{movie.movie_type}</p>
-                  <p>{movie.rating}</p>
-                  <p>{movie.description}</p>
-                </div>
-                </Link>
-                
-              </div>
-              
-              
-              <div className="image_container">
-                <Link to="/watch" state={{movie}}>
-                  <img src={movie.poster_url} alt={movie.title} />
-                </Link>
-              </div>
+      {/* Content */}
+      <div className={`trending_content ${fading ? "trending_fade" : ""}`}>
+        <div className="trending_badges">
+          <span className="trending_badge">{movie.movie_type === "show" ? "TV Show" : "Movie"}</span>
+          {movie.rating && <span className="trending_rating">⭐ {movie.rating}</span>}
+        </div>
 
-              <div onClick={handleNext}> Next </div>
-        
+        <h1 className="trending_title">{movie.title}</h1>
+
+        {movie.genres?.length > 0 && (
+          <div className="trending_genres">
+            {movie.genres.slice(0, 3).map((g, i) => (
+              <span key={i} className="trending_genre_tag">{g}</span>
+            ))}
+          </div>
+        )}
+
+        <p className="trending_description">
+          {movie.description?.length > 200
+            ? movie.description.slice(0, 200) + "…"
+            : movie.description}
+        </p>
+
+        <div className="trending_actions">
+          <Link to="/watch" state={{ movie }} className="trending_watch_btn">
+            ▶ Watch Now
+          </Link>
+        </div>
       </div>
+
+      {/* Prev arrow */}
+      <button className="trending_arrow trending_arrow_left" onClick={handlePrev}>‹</button>
+
+      {/* Next arrow */}
+      <button className="trending_arrow trending_arrow_right" onClick={handleNext}>›</button>
+
+      {/* Dot indicators */}
+      <div className="trending_dots">
+        {movies.map((_, i) => (
+          <button
+            key={i}
+            className={`trending_dot ${i === index ? "trending_dot_active" : ""}`}
+            onClick={() => { goTo(i); resetTimer(); }}
+          />
+        ))}
+      </div>
+    </div>
   );
 }
-
-
-
 
 export default Trending

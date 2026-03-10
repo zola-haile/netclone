@@ -339,7 +339,7 @@ const authenticate_user = async (email,password) => {
 const find_user = async (email) => {
   try{
     // console.log("Holla")
-    const query = `SELECT id,profile_pictur_url,firstname,lastname,email FROM users WHERE email = $1`;
+    const query = `SELECT id,profile_pictur_url,firstname,lastname,email,favorite_genre FROM users WHERE email = $1`;
     const result = await pool.query(query, [email]);
 
     return result.rows[0] || null;

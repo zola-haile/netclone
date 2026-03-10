@@ -20,7 +20,7 @@ function UserPage() {
   const renderContent = () => {
     switch (activated) {
       case "personal_info":
-        return < PersonalInfo />
+        return < PersonalInfo user_info={user} />
       case "history":
         return <History user_info={user}/>;
       case "costumize":
@@ -71,46 +71,70 @@ function UserPage() {
     fetch_userInfo();
   }, []);
 
-  if (!user) return <div>Loading...</div>;
+  if (!user) return (
+    <div className="page_loading">
+      <div className="loading_spinner" />
+      <p>Loading your profile...</p>
+    </div>
+  );
+
+  const avatarLetter = user.firstname?.[0]?.toUpperCase() || "?";
 
   return (
-    <div className="user_page_container">   
-      <div className="left_sub_container">
-        {/* <h1>Welcome {user.firstname} {user.lastname}</h1> */}
-        <div>
-          <img src="" alt="Profile Picture" />
+    <div className="user_page_container">
+
+      {/* ── Sidebar ── */}
+      <aside className="left_sub_container">
+
+        {/* User card at top of nav */}
+        <div className="nav_user_card">
+          {user.profile_pictur_url ? (
+            <img src={user.profile_pictur_url} alt="avatar" className="nav_avatar_img" />
+          ) : (
+            <div className="nav_avatar_placeholder">{avatarLetter}</div>
+          )}
+          <div className="nav_user_info">
+            <span className="nav_user_name">{user.firstname} {user.lastname}</span>
+            <span className="nav_user_email">{user.email}</span>
+          </div>
         </div>
-        
-        <div className={`element_containers ${activated === "personal_info" ? "active": ""}`} 
+
+        <div className="nav_divider" />
+
+        <div className={`element_containers ${activated === "personal_info" ? "active": ""}`}
           onClick={()=>setActivated("personal_info")}>
-          Personal Info
+          <span className="nav_icon">👤</span>
+          <span className="nav_label">Personal Info</span>
         </div>
-        <div className={`element_containers ${activated === "secutiry" ? "active": ""}`} 
+        <div className={`element_containers ${activated === "secutiry" ? "active": ""}`}
           onClick={()=>setActivated("secutiry")}>
-          Security
+          <span className="nav_icon">🔒</span>
+          <span className="nav_label">Security</span>
         </div>
-        <div className={`element_containers ${activated === "costumize" ? "active": ""}`} 
+        <div className={`element_containers ${activated === "costumize" ? "active": ""}`}
           onClick={()=>setActivated("costumize")}>
-          Personalize
+          <span className="nav_icon">🎨</span>
+          <span className="nav_label">Personalize</span>
         </div>
-        <div className={`element_containers ${activated === "history" ? "active": ""}`} 
+        <div className={`element_containers ${activated === "history" ? "active": ""}`}
           onClick={()=>setActivated("history")}>
-          History
+          <span className="nav_icon">🕓</span>
+          <span className="nav_label">History</span>
         </div>
 
+        <div className="nav_spacer" />
 
+        <button className="logout_btn" onClick={logging_out}>
+          <span className="nav_icon">🚪</span>
+          <span className="nav_label">Log Out</span>
+        </button>
 
-        {/* <div>Your Email is {user.email}</div> */}
-        {/* <h2></h2> */}
-        <div>
-          <button onClick={logging_out} >Logout</button>
-        </div>
-        
-      </div>  
+      </aside>
 
-      <div className={"right_sub_container"}>
-          {renderContent()}
-      </div>
+      {/* ── Content ── */}
+      <main className="right_sub_container">
+        {renderContent()}
+      </main>
 
     </div>
   );

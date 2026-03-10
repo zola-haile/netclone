@@ -1,16 +1,30 @@
 import "./NavBar.css"
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 
 function NavBar() {
+  const { pathname } = useLocation();
+
   return (
     <nav id='nav_container'>
+      <Link to="/" id="nav_brand">NetClone</Link>
+
       <ul id='nav_list'>
-        <li><Link to="/"><h2>NetClone</h2></Link></li>
-        <li> <Link to="/movies"> <h2>Movies</h2></Link></li>
-        <li> <Link to="/shows"> <h2>Shows</h2></Link></li>
-        <li> <Link to="/user"> <h2>User</h2></Link></li>
+        <li>
+          <Link to="/movies" className={`nav_link ${pathname === "/movies" ? "nav_active" : ""}`}>
+            Movies
+          </Link>
+        </li>
+        <li>
+          <Link to="/shows" className={`nav_link ${pathname === "/shows" ? "nav_active" : ""}`}>
+            Shows
+          </Link>
+        </li>
       </ul>
+
+      <Link to="/user" className={`nav_user_btn ${pathname === "/user" ? "nav_active" : ""}`}>
+        My Account
+      </Link>
     </nav>
   )
 }

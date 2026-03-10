@@ -11,7 +11,6 @@ function HomePage(){
     const [allMovies, setAllMovies] = useState([]);
     const [tvshows, setTvshows] = useState([]);
     const [movies, setMovies] = useState([]);
-    const [trending_movies, setTrendingMovies] = useState([]);//collects trending movies
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -43,27 +42,41 @@ function HomePage(){
     }, []);
 
 
-    if (loading) return <p>Loading...</p>;
-    // console.log(movies)
-
-
-    // const test_movies=[{title:"zola",url:"zola"},{title:"z",url:"zola"},{title:"zedo",url:"zola"}]
-
-
+    if (loading) return (
+        <div className="home_loading">
+            <div className="home_spinner" />
+        </div>
+    );
 
     return(
-        <div>
-            {/* <Trending /> */}
+        <div className="home_page">
             <Trending movies={tvshows}/>
-            <h3>All time rated movies and shows</h3>
-            <MovieGroup movies={allMovies}/>
-            {/* <MovieGroup movie_type="Movies" movies={[fight_club,spirit,fight_club,spirit,fight_club,spirit,fight_club,spirit,fight_club,spirit]}/>
-            <MovieGroup movie_type="Shows" movies={[One_piece]}/> */}
-            <h3>All time rated movies and shows</h3>
-            <MovieGroup movies={movies}/>
 
-            <h3>All time rated movies and shows</h3>
-            <MovieGroup movies={tvshows}/>
+            <div className="home_sections">
+                <section className="home_section">
+                    <div className="section_header">
+                        <h2 className="section_title">Top Rated</h2>
+                        <span className="section_subtitle">Best of movies & shows</span>
+                    </div>
+                    <MovieGroup movies={allMovies}/>
+                </section>
+
+                <section className="home_section">
+                    <div className="section_header">
+                        <h2 className="section_title">Movies</h2>
+                        <span className="section_subtitle">Latest films</span>
+                    </div>
+                    <MovieGroup movies={movies}/>
+                </section>
+
+                <section className="home_section">
+                    <div className="section_header">
+                        <h2 className="section_title">TV Shows</h2>
+                        <span className="section_subtitle">Binge-worthy series</span>
+                    </div>
+                    <MovieGroup movies={tvshows}/>
+                </section>
+            </div>
         </div>
     )
 }
